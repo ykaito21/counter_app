@@ -1,5 +1,6 @@
+import 'package:counter_app/counter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final counterProvider = StateProvider<int>((ref) {
-  return 0;
+final counterProvider = StateProvider<Counter>((ref) {
+  return const Counter(0);
 });

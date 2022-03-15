@@ -1,3 +1,4 @@
+import 'package:counter_app/counter.dart';
 import 'package:counter_app/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.watch(counterProvider);
+    final counter = ref.watch(counterProvider).value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod'),
@@ -50,7 +51,10 @@ class MyHomePage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).state++,
+        onPressed: () {
+          final notifier = ref.read(counterProvider.notifier);
+          notifier.state = Counter(notifier.state.value + 1);
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
