@@ -1,4 +1,3 @@
-import 'package:counter_app/counter.dart';
 import 'package:counter_app/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,10 +50,7 @@ class MyHomePage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final notifier = ref.read(counterProvider.notifier);
-          notifier.state = Counter(notifier.state.value + 1);
-        },
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
