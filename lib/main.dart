@@ -32,7 +32,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counterStream = ref.watch(counterProvider).streamCounter;
+    final counterStream = ref.watch(counterStreamProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod'),
@@ -44,25 +44,22 @@ class MyHomePage extends ConsumerWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            StreamBuilder<Counter>(
-                stream: counterStream,
-                builder: (context, snapshot) {
-                  // may need to handle ConnectionState and null case
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Error',
-                      style: Theme.of(context).textTheme.headline4,
-                    );
-                  } else if (snapshot.hasData) {
-                    final counter = snapshot.data!.value;
-                    return Text(
-                      '$counter',
-                      style: Theme.of(context).textTheme.headline4,
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                }),
+            counterStream.when(
+              error: (error, stack) {
+                return Text(
+                  'Error',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+              data: (value) {
+                final counter = value.value;
+                return Text(
+                  '$counter',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+              loading: () => const CircularProgressIndicator(),
+            ),
           ],
         ),
       ),

@@ -2,6 +2,10 @@ import 'package:counter_app/counter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
+final counterStreamProvider = StreamProvider.autoDispose<Counter>((ref) {
+  return ref.watch(counterProvider).streamCounter;
+});
+
 final counterProvider = Provider.autoDispose<CounterNotifier>((ref) {
   final notifier = CounterNotifier();
   ref.onDispose(() {
