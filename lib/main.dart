@@ -2,6 +2,8 @@ import 'package:counter_app/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'counter.dart';
+
 void main() {
   runApp(
     const ProviderScope(
@@ -30,7 +32,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.watch(counterProvider).counter.value;
+    final counterStream = ref.watch(counterProvider).streamCounter;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod'),
@@ -42,15 +44,33 @@ class MyHomePage extends ConsumerWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            StreamBuilder<Counter>(
+                stream: counterStream,
+                builder: (context, snapshot) {
+                  // may need to handle ConnectionState and null case
+                  if (snapshot.hasError) {
+                    return Text(
+                      'Error',
+                      style: Theme.of(context).textTheme.headline4,
+                    );
+                  } else if (snapshot.hasData) {
+                    final counter = snapshot.data!.value;
+                    return Text(
+                      '$counter',
+                      style: Theme.of(context).textTheme.headline4,
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                }),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider).increment(),
+        onPressed: () {
+          final notifier = ref.read(counterProvider);
+          notifier.increment(Counter(notifier.counter.value + 1));
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),

@@ -1,17 +1,22 @@
 import 'package:counter_app/counter.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rxdart/rxdart.dart';
 
-final counterProvider = ChangeNotifierProvider<CounterNotifier>((ref) {
-  return CounterNotifier();
+final counterProvider = Provider.autoDispose<CounterNotifier>((ref) {
+  final notifier = CounterNotifier();
+  ref.onDispose(() {
+    notifier.dispose();
+  });
+  return notifier;
 });
 
-class CounterNotifier extends ChangeNotifier {
-  Counter _counter = const Counter(0);
-  Counter get counter => _counter;
+class CounterNotifier {
+  final _counterSubject = BehaviorSubject<Counter>.seeded(const Counter(0));
+  Stream<Counter> get streamCounter => _counterSubject.stream;
+  void Function(Counter) get increment => _counterSubject.add;
+  Counter get counter => _counterSubject.value;
 
-  void increment() {
-    _counter = Counter(_counter.value + 1);
-    notifyListeners();
+  void dispose() {
+    _counterSubject.close();
   }
 }
