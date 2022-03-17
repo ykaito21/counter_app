@@ -30,7 +30,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.watch(counterProvider).value;
+    final counter = ref.watch(counterProvider).counter.value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod'),
@@ -50,7 +50,7 @@ class MyHomePage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        onPressed: () => ref.read(counterProvider).increment(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
